@@ -59,7 +59,7 @@ def model_load_function(model_path=None):
     return (tokenizer,model.to(device))
 #
 st.write("""
-## ⚡️ TRUE/FALSE Question Generator App ⚡️
+## ⚡️ Boolean(YES/NO) Question Generator App ⚡️
 """)
 
 query = st.text_input("Enter the Context here.", "")
