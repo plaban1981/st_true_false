@@ -49,6 +49,7 @@ def predict_function(text,Model):
     final = f'Boolean Questions generated : {result}'
     return final
 #
+@st.experimental_singleton
 def model_load_function(model_path=None):
     print("loading model...")
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
