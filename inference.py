@@ -13,6 +13,11 @@ import os
 import json
 import numpy as np
 import random
+from PIL import Image
+
+#
+image_path = "image.png"
+image = Image.open(image_path)
 
 def preprocess_function(text_path,content_type = None ):
     with open(text_path,"r") as f:
@@ -58,9 +63,8 @@ def model_load_function(model_path=None):
     print("model was loaded")
     return (tokenizer,model.to(device))
 #
-st.write("""
-## ⚡️ Boolean(YES/NO) Question Generator App ⚡️
-""")
+st.image(image, caption='Boolean Question Generator')
+st.write("""## ⚡️ Boolean Question Generator App ⚡️""")
 
 query = st.text_input("Enter the Context here.", "")
 
