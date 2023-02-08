@@ -20,10 +20,10 @@ image_path = "image.png"
 image = Image.open(image_path)
 
 def preprocess_function(text_path,content_type = None ):
-    with open(text_path,"r") as f:
-      data = f.read()
-    print(data)
-    sentences = [sent_tokenize(data)]
+    #with open(text_path,"r") as f:
+    #  data = f.read()
+    print(text_path)
+    sentences = [sent_tokenize(text_path)]
     sentences = [y for x in sentences for y in x]
     # Remove any short sentences less than 20 letters.
     sentences = [sentence.strip() for sentence in sentences if len(sentence) > 20]
@@ -32,10 +32,16 @@ def preprocess_function(text_path,content_type = None ):
     answer = bool(random.choice([0,1]))
     form = "truefalse: %s passage: %s </s>" % (modified_text, answer)
     print(form)
-    return form
+    return (form,answer)
 
 # 
-def predict_function(text,Model): 
+def predict_function(data,Model): 
+    print(data)
+    text,answer = data
+    if answer == True:
+        ans = 'Yes'
+    else:
+        ans = 'No'
     tokenizer, model  = Model
     device = "cuda" if torch.cuda.is_available() else "cpu"
     encoding = tokenizer.encode_plus(text, return_tensors="pt")
@@ -51,7 +57,8 @@ def predict_function(text,Model):
                             )
     Questions = [tokenizer.decode(out, skip_special_tokens=True, clean_up_tokenization_spaces=True) for out in output]
     result = [Question.strip().capitalize() for Question in Questions]
-    final = f'Boolean Questions generated : {result}'
+    data = {quest: ans for quest in result}
+    final = f'Boolean Questions and answer generated : {data}'
     return final
 #
 @st.experimental_singleton
@@ -71,8 +78,10 @@ query = st.text_input("Enter the Context here.", "")
 if query != "":
     with st.spinner(text="Initializing the Model...It might take a while..."):
         model = model_load_function(model_path=None)
+    with st.spinner(text="Preprocessing the Context...It might take a while..."):
+        data = preprocess_function(query)
     with st.spinner(text="Making Predictions...It might take a while..."):    
-        predictions = predict_function(query,model)
+        predictions = predict_function(data,model)
 
     with st.spinner(text="Questions Generated 🚀🚀🚀"):
         st.success(predictions)
