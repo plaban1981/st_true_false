@@ -9,6 +9,7 @@ nltk.download('popular')
 from nltk.corpus import stopwords
 from nltk.corpus import brown
 from nltk.tokenize import sent_tokenize
+import pandas as pd
 import os
 import json
 import numpy as np
@@ -57,8 +58,7 @@ def predict_function(data,Model):
                             )
     Questions = [tokenizer.decode(out, skip_special_tokens=True, clean_up_tokenization_spaces=True) for out in output]
     result = [Question.strip().capitalize() for Question in Questions]
-    data = {quest: ans for quest in result}
-    final = f'Boolean Questions and answer generated : {data}'
+    final = pd.DataFrame({'Questions':result,'Answer':[ans]*len(result)})
     return final
 #
 @st.experimental_singleton
@@ -84,4 +84,4 @@ if query != "":
         predictions = predict_function(data,model)
 
     with st.spinner(text="Questions Generated 🚀🚀🚀"):
-        st.success(predictions)
+        st.dataframe(predictions)
